@@ -1,0 +1,21 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('git') {
+            steps {
+                git branch: 'main', credentialsId: 'git', url: 'https://github.com/juno-choi/hyugi-batch.git'
+            }
+        }
+        stage('build') {
+            steps {
+                sh './gradlew clean build -x test'
+            }
+        }
+        stage('up') {
+            steps {
+                sh 'docker-compose up -d --build'
+            }
+        }
+    }
+}
