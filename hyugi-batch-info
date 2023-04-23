@@ -1,0 +1,22 @@
+import java.time.*
+import java.time.format.DateTimeFormatter
+
+pipeline {
+    agent any
+
+    stages {
+        stage('date') {
+            steps {
+                script {
+                    def now = LocalDateTime.now()
+                    TODAY = now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"))                
+                }  
+            }
+        }
+        stage('batch') {
+            steps {
+                sh "docker exec hyugi-batch java -jar hyugi-batch.jar --job.name=restAreaInfoJobStart version=${TODAY}"
+            }
+        }
+    }
+}
